@@ -48,10 +48,13 @@ class FollowSerializers(serializers.ModelSerializer):
             validators.UniqueTogetherValidator(
                 queryset=Follow.objects.all(),
                 fields=('user', 'following'),
+                message='Уже подписаны'
             ),
         )
 
     def validate_following(self, following):
         if following == self.context['request'].user:
-            raise serializers.ValidationError()
+            raise serializers.ValidationError(
+                'Подписка на свою учетную запись запрещена'
+            )
         return following
